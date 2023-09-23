@@ -1,3 +1,7 @@
+import dlib
+import imutils
+from concurrent.futures import thread
+from imutils.video import FPS
 import cv2
 from imutils.video import VideoStream
 import argparse
@@ -6,6 +10,9 @@ from itertools import zip_longest
 import json
 import logging
 import time
+
+import numpy as np
+from tracker.centroidtracker import CentroidTracker
 
 from utils.mailer import Mailer
 
@@ -87,5 +94,113 @@ def people_counter():
     W = None # Width
     H = None # Height
 
-    
+    # Create a Centroid Tracker object
+    ct = CentroidTracker( maxDissappeared = 40, maxDistance = 50 )
+    trackers = [] # Store dlib correlation filters
+    trackableObjects = {} # Dictionary to map unique object IDs to Trackable Object
 
+    # Total number of frames processed so far
+    totalFrames = 0
+    # Total number of objects moving left or right
+    totalLeft = 0
+    totalRight = 0
+
+    # Initialize lists to store counting data
+    total = []
+    move_out = []
+    move_in = []
+    out_time = []
+    in_time = []
+
+    # Start FPS
+    fps = FPS().start()
+
+    # Concurrency
+    if config["Thread"]:
+        vs = thread.ThreadingClass( config["url"] )
+
+    # Loop over frames from video stream
+    while True:
+        # Handle if we're reading from VideoCapture or VideoStream
+        frame = vs.read()
+        frame = frame[1] if args.get( "input", False ) else frame
+
+        # If video and we didn't get the frame, we reached the end of the video
+        if args["input"] is not None and frame is None:
+            break
+
+        # Resize frame
+        frame = imutils.resize( frame, width = 500 )
+        # Convert from BGR to RGB for dlib
+        rgb = cv2.cvtColor( frame, cv2.COLOR_BGR2RGB )
+
+        # Set frame dimensions if empty
+        if W is None or H is None:
+            (H, W) = frame.shape[:2]
+
+        # If writing video to disk, initialize writer
+        if args["output"] is not None and writer is None:
+            fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+            writer = cv2.VideoWriter( args["output"], fourcc, 30, (W,H), True )
+
+        # Current status
+        status = "Waiting"
+        # Returned list of bounding box rectangles by object detector or correlation tracker
+        rects = []
+
+        # More computationally expensive object detection
+        if totalFrames % args["skip_frames"] == 0:
+            # Set status
+            status = "Detecting"
+            trackers = [] # Initialize new set of object trackers
+
+            blob = cv2.dnn.blobFromImage( frame, 0.007843, (W,H), 127.5 ) # Convert frame to blob
+            net.setInput( blob ) # Pass blob through model
+            detections = net.forward() # Get detections
+
+            # Loop over detections
+            for i in np.arange( 0, detections.shape[2] ):
+                confidence = detections[0, 0, i, 2] # Extract confidence
+
+                if confidence > args["confidence"]: # Filter weak connections
+                    # Extract index of class label
+                    idx = int( detections[0, 0, i, 1] )
+
+                    # If not a person - ignore
+                    if CLASSES[ idx ] != "person":
+                        continue
+
+                    # Compute (x,y) of bounding box
+                    box = detections[ 0, 0, i, 3:7 ] * np.array( [W, H, W, H] )
+                    (startX, startY, endX, endY) = box.astype("int")
+
+                    # Construct dlib rectangle object
+                    tracker = dlib.correlation_tracker()
+                    rect = dlib.rectangle( startX, startY, endX, endY )
+                    # Start dlib filtering
+                    tracker.start_track( rgb, rect )
+
+                    # Add to list of trackers
+                    trackers.append( tracker )
+
+        # Otherwise, use object trackers than detectors
+        else:
+            # Loop over trackers
+            for tracker in trackers:
+                # Set status
+                status = "Tracking"
+
+                # Update tracker
+                tracker.update( rgb )
+                pos = tracker.get_position() # Get tracker position
+
+                # Unpack position
+                startX = int( pos.left() )
+                startY = int( pos.top() )
+                endX = int( pos.right() )
+                endY = int( pos.bottom() )
+
+                # Add to rectangles list
+                rects.append( (startX, startY, endX, endY) )
+
+        
