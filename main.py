@@ -54,4 +54,17 @@ def log_data( move_in, in_time, move_out, out_time ):
             wr.writerow( ("Move In", "In Time", "Move Out", "Out Time") )
             wr.writerows( export_data )
 
+# Actual function
+def people_counter():
+    args = parse_arguments() # Asks for CLI arguments, args is dictionary
+    # List of class labels MobileNet SSD was trained to detect
+    CLASSES = [
+        "background", "aeroplane", "bicycle", "bird", "boat",
+        "bottle", "bus", "car", "cat", "chair", "cow", "diningtable",
+        "dog", "horse", "motorbike", "person", "pottedplant", "sheep",
+        "sofa", "train", "tvmonitor"
+    ]
+    # Load model from disk (assigns model to net)
+    net = cv2.dnn.readNetFromCaffe( args[ "prototxt" ], args[ "model" ] )
+
 
