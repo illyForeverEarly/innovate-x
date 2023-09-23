@@ -203,4 +203,9 @@ def people_counter():
                 # Add to rectangles list
                 rects.append( (startX, startY, endX, endY) )
 
+        # Draw vertical line
+        cv2.line( frame, (W // 2, 0), ( W // 2, H ), (0, 0, 0), 3 )
+        cv2.putText( frame, "-Prediction border - Entrance-", (10, H - ( (i * 20) + 200 )),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1 )
+        
         
