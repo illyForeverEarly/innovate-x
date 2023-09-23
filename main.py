@@ -1,3 +1,5 @@
+import datetime
+import threading
 import dlib
 import imutils
 from concurrent.futures import thread
@@ -208,4 +210,62 @@ def people_counter():
         cv2.putText( frame, "-Prediction border - Entrance-", (10, H - ( (i * 20) + 200 )),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1 )
         
-        
+        # Use centroid tracker to associate old and new object centroids
+        objects = ct.update( rects )
+
+        # Loop over tracked objects
+        for ( objectID, centroid ) in objects.items():
+            # Check if trackable object exists for current objectID
+            to = trackableObjects.get( objectID, None )
+
+            # If they don't exist - create them
+            if to is None:
+                to = trackableObjects( objectID, centroid )
+
+            # Otherwise, they do exist
+            else:
+                # Determine direction
+                x = [ c[0] for c in to.centroids ]
+                direction = centroid[0] - np.mean(x)
+                to.centroids.append( centroid )
+
+                # Check if the object has been counted
+                if not to.counted:
+                    # If direction < 0 (moving left)
+                    # AND centroid is to the left of the line - 
+                    # count the object
+                    if direction < 0 and centroid[0] < W // 2:
+                        totalLeft += 1
+                        date_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+                        move_out.append( totalLeft )
+                        out_time.append( date_time )
+                        to.counted = True
+
+                    # If direction > 0 (moving right)
+                    # AND centroid is to the right of the line - 
+                    # count the object
+                    elif direction > 0 and centroid[0] > W // 2:
+                        totalRight += 1
+                        date_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
+                        move_in.append( totalRight )
+                        out_time.append( date_time )
+                        to.counted = True
+
+                        # If people limit exceeds Threshold, send email alert
+                        if sum( total ) >= config[ "Threshold" ]:
+                            cv2.putText( frame, "-ALERT: A lot of people-", (10, frame.shape[0] - 80),
+                                        cv2.FONT_HERSHEY_COMPLEX, 0.5, (0, 0, 255), 2 )
+                            if config[ "ALERT" ]:
+                                logger.info( "Sending email alert..." )
+                                email_thread = threading.Thread( target = send_mail )
+                                email_thread.daemon = True
+                                email_thread.start()
+                                logger.info( "Alert sent!" )
+                        to.counted = True
+
+                        # Total inside:
+                        total = []
+                        total.append( len(move_in) - len(move_out) )
+
+            
+
