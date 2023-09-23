@@ -1,3 +1,4 @@
+import schedule
 import datetime
 import threading
 import dlib
@@ -339,4 +340,11 @@ def people_counter():
     # Close all open windows
     cv2.destroyAllWindows()
 
-    
+# Create scheduler
+if config["Scheduler"]:
+    # Run every day at 9AM
+    schedule.every().day.at("09:00").do( people_counter )
+    while True:
+        schedule.run_pending()
+else:
+    people_counter()
