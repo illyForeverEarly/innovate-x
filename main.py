@@ -14,10 +14,8 @@ from itertools import zip_longest
 import json
 import logging
 import time
-
 import numpy as np
 from tracker.centroidtracker import CentroidTracker
-
 from utils.mailer import Mailer
 
 # Start of execution time
@@ -99,7 +97,7 @@ def people_counter():
     H = None # Height
 
     # Create a Centroid Tracker object
-    ct = CentroidTracker( maxDissappeared = 40, maxDistance = 50 )
+    ct = CentroidTracker( maxDisappeared = 40, maxDistance = 50 )
     trackers = [] # Store dlib correlation filters
     trackableObjects = {} # Dictionary to map unique object IDs to Trackable Object
 
@@ -222,7 +220,7 @@ def people_counter():
 
             # If they don't exist - create them
             if to is None:
-                to = trackableObjects( objectID, centroid )
+                to = TrackableObject( objectID, centroid )
 
             # Otherwise, they do exist
             else:
@@ -250,8 +248,8 @@ def people_counter():
                         totalRight += 1
                         date_time = datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
                         move_in.append( totalRight )
-                        out_time.append( date_time )
-                        to.counted = True
+                        in_time.append( date_time )
+                        
 
                         # If people limit exceeds Threshold, send email alert
                         if sum( total ) >= config[ "Threshold" ]:
@@ -282,7 +280,7 @@ def people_counter():
         info_status = [
             ("Exit: ", totalLeft),
             ("Enter: ", totalRight),
-            ("Status: ", status)
+            ("Status: ", status),
         ]
 
         info_total = [

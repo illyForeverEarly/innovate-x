@@ -1,5 +1,5 @@
 from collections import OrderedDict
-from distutils import dist
+from scipy.spatial import distance as dist
 
 import numpy as np
 
@@ -57,7 +57,7 @@ class CentroidTracker:
         # If we're not tracking any objects
         if len( self.objects ) == 0:
             for i in range( 0, len( inputCentroids ) ):
-                self.register( inputCentroids )
+                self.register( inputCentroids[i] )
 
         # Otherwise, try to match input centroids to existing object centroids
         else:
