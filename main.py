@@ -318,4 +318,12 @@ def people_counter():
         totalFrames += 1
         fps.update()
 
+        # Create timer
+        if config["Timer"]:
+            # Auto-timer to stop live-stream (8 hours)
+            end_time = time.time()
+            num_seconds = ( end_time - start_time )
+            if num_seconds > 28800:
+                break
+
         
