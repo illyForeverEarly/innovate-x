@@ -302,4 +302,8 @@ def people_counter():
         if config["Log"]:
             log_data( move_in, in_time, move_out, out_time )
 
+        # Check if we need to write frame to disk
+        if writer is not None:
+            writer.write( frame )
+
         
