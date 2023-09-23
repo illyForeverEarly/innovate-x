@@ -336,4 +336,7 @@ def people_counter():
     if config["Thread"]:
         vs.release()
 
+    # Close all open windows
+    cv2.destroyAllWindows()
+
     
