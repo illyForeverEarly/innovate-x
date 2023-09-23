@@ -298,4 +298,8 @@ def people_counter():
             cv2.putText( frame, text, ( 265, H - ( ( i * 20 ) + 60 ) ),
                         cv2.FONT_HERSHEY_TRIPLEX, 0.6, (255, 255, 255), 2 )
 
+        # Log to save counting data
+        if config["Log"]:
+            log_data( move_in, in_time, move_out, out_time )
 
+        
