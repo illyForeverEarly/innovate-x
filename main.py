@@ -1,9 +1,9 @@
+from utils import thread
 import schedule
 import datetime
 import threading
 import dlib
 import imutils
-from concurrent.futures import thread
 from imutils.video import FPS
 import cv2
 from imutils.video import VideoStream
