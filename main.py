@@ -306,4 +306,10 @@ def people_counter():
         if writer is not None:
             writer.write( frame )
 
+        # Show output frame
+        cv2.imshow("Live", frame)
+        key = cv2.waitKey(1) & 0xFF
+        # If 'q' is pressed, escape the loop
+        if key == ord("q"):
+            break
         
