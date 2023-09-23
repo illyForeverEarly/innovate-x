@@ -331,3 +331,9 @@ def people_counter():
     fps.stop()
     logger.info("Elapsed time: {:.2f}".format( fps.elapsed() ))
     logger.info("Approx. FPS: {:.2f}.".format( fps.fps() ))
+
+    # Release camera source
+    if config["Thread"]:
+        vs.release()
+
+    
