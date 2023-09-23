@@ -1,8 +1,6 @@
-# innovate-x
-
 # brain-storm
 
-Definition of Jerry:
+## Definition of Jerry:
 
 1. Smartboard that manages pedestrian flows. It is an interactive urban
    wayfinder that provides residents and tourists with  on-demand information
@@ -17,7 +15,7 @@ Definition of Jerry:
 
    keywords: camera, SOS-button, NFC-module, payments, WI-FI, wireless charging
 
-Questions:
+## Questions:
 
 1. What is on-demand information for pedestrians?
 
@@ -31,19 +29,16 @@ Questions:
 
 4. What is pedestrian flow?
 
-Problems:
+## Problems:
 
-1. Muslim girls
+1. Muslim girls not totally covering
 2. Rape
-3. 
 
-Ideas:
+## Ideas:
 
 1. Pedestrian Flow Data Analytics
 2. Tourists
 3. Establishing how busy certain attractions will be at certain times
 
-Implementation:
+# Implementation:
 
-    1. 
-    2.
