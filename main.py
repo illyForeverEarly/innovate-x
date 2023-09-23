@@ -312,4 +312,10 @@ def people_counter():
         # If 'q' is pressed, escape the loop
         if key == ord("q"):
             break
+
+        # Increment total frames processed thus far
+        # Update FPS counter
+        totalFrames += 1
+        fps.update()
+
         
