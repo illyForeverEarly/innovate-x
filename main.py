@@ -1,3 +1,4 @@
+import cv2
 from imutils.video import VideoStream
 import argparse
 import csv
@@ -73,3 +74,8 @@ def people_counter():
         logger.info( "Starting the live stream..." )
         vs = VideoStream( config["url"] ).start() # Starts live stream of given url
         time.sleep(2.0)
+
+    # Otherwise, video file
+    else:
+        logger.info( "Starting the video..." )
+        vs = cv2.VideoCapture( args["input"] )
