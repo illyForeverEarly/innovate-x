@@ -267,5 +267,8 @@ def people_counter():
                         total = []
                         total.append( len(move_in) - len(move_out) )
 
+            # Store trackable objects in dictionary
+            trackableObjects[ objectID ] = to
+
             
 
