@@ -1,3 +1,4 @@
+import json
 import logging
 import time
 
@@ -9,5 +10,7 @@ logging.basicConfig( level = logging.INFO, format = "[INFO] %(message)s" ) #conf
 logger = logging.getLogger(__name__) #return a logger with the specified name
 
 # Features Configurations
-with open( "", "r" ) as file:
+with open( "./utils/config.json", "r" ) as file:
+    config = json.load( file )
+
 
