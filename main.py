@@ -1,3 +1,4 @@
+from imutils.video import VideoStream
 import argparse
 import csv
 from itertools import zip_longest
@@ -67,4 +68,8 @@ def people_counter():
     # Load model from disk (assigns model to net)
     net = cv2.dnn.readNetFromCaffe( args[ "prototxt" ], args[ "model" ] )
 
-
+    # If there was no video argument, then IP-camera
+    if not args.get( "input", False ):
+        logger.info( "Starting the live stream..." )
+        vs = VideoStream( config["url"] ).start() # Starts live stream of given url
+        time.sleep(2.0)
