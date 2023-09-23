@@ -208,7 +208,7 @@ def people_counter():
         # Draw vertical line
         cv2.line( frame, (W // 2, 0), ( W // 2, H ), (0, 0, 0), 3 )
         cv2.putText( frame, "-Prediction border - Entrance-", (10, H - ( (i * 20) + 200 )),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1 )
+                    cv2.FONT_HERSHEY_TRIPLEX , 0.5, (255, 255, 255), 1 )
         
         # Use centroid tracker to associate old and new object centroids
         objects = ct.update( rects )
@@ -254,7 +254,7 @@ def people_counter():
                         # If people limit exceeds Threshold, send email alert
                         if sum( total ) >= config[ "Threshold" ]:
                             cv2.putText( frame, "-ALERT: A lot of people-", (10, frame.shape[0] - 80),
-                                        cv2.FONT_HERSHEY_COMPLEX, 0.5, (0, 0, 255), 2 )
+                                        cv2.FONT_HERSHEY_TRIPLEX, 0.5, (0, 0, 255), 2 )
                             if config[ "ALERT" ]:
                                 logger.info( "Sending email alert..." )
                                 email_thread = threading.Thread( target = send_mail )
@@ -273,8 +273,29 @@ def people_counter():
             # Draw ID and centroid of object
             text = "ID: {}".format( objectID )
             cv2.putText( frame, text, ( centroid[0] + 10, centroid[1] + 10 ),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 255, 255), -1 )
+                        cv2.FONT_HERSHEY_TRIPLEX, 0.5, (255, 255, 255), -1 )
             cv2.circle( frame, (centroid[0], centroid[1]), 4, (255, 255, 255), -1 )
 
-            
+        # Construct tuple of info to display
+        info_status = [
+            ("Exit: ", totalLeft),
+            ("Enter: ", totalRight),
+            ("Status: ", status)
+        ]
+
+        info_total = [
+            ("Total people inside", ", ".join( map( str, total ) ) ),
+        ]
+
+        # Display output
+        for ( i, (k, v) ) in enumerate( info_status ):
+            text = "{}{}".format( k, v )
+            cv2.putText( frame, text, ( 10, H - ( ( i * 20 ) + 20 ) ),
+                        cv2.FONT_HERSHEY_TRIPLEX, 0.6, (255, 255, 255), 2 )
+        
+        for ( i, (k, v) ) in enumerate( info_total ):
+            text = "{}{}".format( k, v )
+            cv2.putText( frame, text, ( 265, H - ( ( i * 20 ) + 60 ) ),
+                        cv2.FONT_HERSHEY_TRIPLEX, 0.6, (255, 255, 255), 2 )
+
 
