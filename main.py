@@ -1,7 +1,11 @@
 import argparse
+import csv
+from itertools import zip_longest
 import json
 import logging
 import time
+
+from utils.mailer import Mailer
 
 # Start of execution time
 start_time = time.time()
@@ -33,5 +37,21 @@ def parse_arguments():
     args = vars( ap.parse_args() ) # args is a dictionary where arguments are keys
     return args
 
+# Function to send email alerts
+def send_mail():
+    Mailer().send( config["Email_Receive"] )
+
+# Function to log the counting data
+def log_data( move_in, in_time, move_out, out_time ):
+    data = [ move_in, in_time, move_out, out_time ]
+    # Cartesian product, returns tuples
+    export_data = zip_longest( *data, fillvalue = '' )
+
+    with open( "./utils/data/logs/counting_data.csv", "w", newline = '' ) as myfile:
+        # Write export data to counting_data.csv
+        wr = csv.writer( myfile, quoting = csv.QUOTE_ALL )
+        if myfile.tell() == 0: # If header rows do NOT exist
+            wr.writerow( ("Move In", "In Time", "Move Out", "Out Time") )
+            wr.writerows( export_data )
 
 
