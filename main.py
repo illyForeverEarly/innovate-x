@@ -79,3 +79,13 @@ def people_counter():
     else:
         logger.info( "Starting the video..." )
         vs = cv2.VideoCapture( args["input"] )
+
+    # Initialize the video writer
+    writer = None
+
+    # Initialize frame dimensions
+    W = None # Width
+    H = None # Height
+
+    
+
