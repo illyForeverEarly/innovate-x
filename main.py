@@ -326,4 +326,8 @@ def people_counter():
             if num_seconds > 28800:
                 break
 
-        
+    # Stop timer
+    # Display FPS
+    fps.stop()
+    logger.info("Elapsed time: {:.2f}".format( fps.elapsed() ))
+    logger.info("Approx. FPS: {:.2f}.".format( fps.fps() ))
