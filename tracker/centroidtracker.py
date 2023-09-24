@@ -57,7 +57,7 @@ class CentroidTracker:
         # If we're not tracking any objects
         if len( self.objects ) == 0:
             for i in range( 0, len( inputCentroids ) ):
-                self.register( inputCentroids[i] )
+                self.register( inputCentroids[i] ) # Error's here
 
         # Otherwise, try to match input centroids to existing object centroids
         else:
@@ -122,7 +122,7 @@ class CentroidTracker:
                 for column in unusedColumns:
                     self.register( inputCentroids[column] )
 
-            # Return set of trackable objects
-            return self.objects
+        # Return set of trackable objects
+        return self.objects
 
 
