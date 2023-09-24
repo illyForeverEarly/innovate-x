@@ -1,3 +1,5 @@
+import matplotlib.pyplot as plt
+import csv
 from tracker.trackableobject import TrackableObject
 from utils import thread
 import schedule
@@ -338,6 +340,25 @@ def people_counter():
 
     # Close all open windows
     cv2.destroyAllWindows()
+
+    # Analyze counting data
+    x = []
+    y = []
+    
+    with open('./utils/data/logs/counting_data.csv','r') as csvfile:
+        plots = csv.reader(csvfile, delimiter = ',')
+        for idx, row in enumerate(plots):
+            if idx == 0:
+                continue
+            x.append(row[1])
+            y.append(row[0])
+    
+    plt.bar(x, y, color = 'r', width = 0.72, label = "People")
+    plt.xlabel('Time')
+    plt.ylabel('Move In')
+    plt.title('Busyness Graph')
+    plt.legend()
+    plt.show()
 
 # Create scheduler
 if config["Scheduler"]:
