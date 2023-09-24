@@ -29,11 +29,6 @@
 
 4. What is pedestrian flow?
 
-## Problems:
-
-1. Muslim girls not totally covering
-2. Rape
-
 ## Ideas:
 
 1. Pedestrian Flow Data Analytics
