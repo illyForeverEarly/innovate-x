@@ -11,7 +11,6 @@ from imutils.video import FPS
 import cv2
 from imutils.video import VideoStream
 import argparse
-import csv
 from itertools import zip_longest
 import json
 import logging
